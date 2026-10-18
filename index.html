@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0a0e13" />
+    <meta name="description" content="A read-only CI health dashboard for public GitHub Actions workflows. Explore release reliability, run time, and recent failures." />
+    <meta property="og:title" content="RunScope — GitHub Actions health" />
+    <meta property="og:description" content="See what your pipeline is telling you. A live, read-only view of GitHub Actions history." />
+    <title>RunScope — GitHub Actions health</title>
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+    <script type="module" src="src/app.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to dashboard</a>
+    <header class="topbar">
+      <a class="brand" href="./" aria-label="RunScope home"><span class="brand-mark">R</span><span>RUN<span>SCOPE</span></span></a>
+      <div class="topbar-right"><span class="read-only"><i></i> PUBLIC DATA · READ ONLY</span><a class="source-link" href="https://github.com/damnsunnyy/RunScope" target="_blank" rel="noreferrer">VIEW SOURCE <span>↗</span></a></div>
+    </header>
+
+    <main id="main">
+      <section class="intro" aria-labelledby="page-title">
+        <div class="intro-copy">
+          <p class="eyebrow"><span class="pulse"></span> DELIVERY SIGNALS / 001</p>
+          <h1 id="page-title">Know how<br />your builds <em>ship.</em></h1>
+          <p class="lede">A clear read on your GitHub Actions history. Track release reliability, spot slow workflows, and open the run that needs attention.</p>
+        </div>
+        <div class="terminal-card" aria-label="RunScope reads public workflow history from the GitHub API">
+          <div class="terminal-top"><span><i></i><i></i><i></i></span><span>READ-ONLY CONNECTION</span></div>
+          <div class="terminal-body"><span class="terminal-line"><b>GET</b> api.github.com/repos/</span><span class="terminal-line terminal-path" id="terminal-path">damnsunnyy/Portfolio/actions/runs</span><span class="terminal-result"><i></i><span id="connection-label" role="status" aria-live="polite">CONNECTING TO PUBLIC API</span></span></div>
+        </div>
+      </section>
+
+      <section class="query-panel" aria-label="Choose a public repository">
+        <div class="query-label"><span class="index">01</span><label for="repo-input">INSPECT A PUBLIC REPOSITORY</label></div>
+        <form id="repo-form" class="query-form">
+          <span class="at-sign" aria-hidden="true">⌘</span>
+          <input id="repo-input" name="repository" value="damnsunnyy/Portfolio" autocomplete="url" spellcheck="false" aria-describedby="repo-help" required />
+          <button id="load-button" type="submit"><span class="button-label">ANALYZE REPOSITORY</span><span aria-hidden="true">↗</span></button>
+        </form>
+        <div class="query-footer"><p id="repo-help">Enter <code>owner/repo</code>. Public repositories only; no token or account access is requested.</p><label class="period-label" for="period-select">WINDOW <select id="period-select"><option value="7">7 DAYS</option><option value="30" selected>30 DAYS</option><option value="90">90 DAYS</option></select></label></div>
+        <div class="error-banner" id="error-banner" role="alert" hidden></div>
+      </section>
+
+      <section class="dashboard" aria-busy="true" id="dashboard">
+        <div class="section-topline"><div><span class="index">02</span><span class="section-label">RELEASE HEALTH</span></div><div class="dashboard-actions"><span class="freshness" id="freshness">FETCHING LIVE WORKFLOW DATA…</span><button class="icon-button" id="refresh-button" type="button" aria-label="Refresh workflow data" title="Refresh workflow data">↻</button><button class="icon-button" id="export-button" type="button" aria-label="Download this report as JSON" title="Download report as JSON" disabled>↓</button></div></div>
+
+        <div class="repo-heading"><div><h2 id="repo-title">Portfolio</h2><p id="repo-description">Loading public workflow history…</p></div><a id="repo-link" class="repo-link" href="https://github.com/damnsunnyy/Portfolio" target="_blank" rel="noreferrer">OPEN REPOSITORY ↗</a></div>
+
+        <div class="metric-grid" aria-label="Repository delivery metrics">
+          <article class="metric-card metric-primary"><span>SUCCESS RATE <small>COMPLETED RUNS</small></span><strong id="success-rate">—<small>%</small></strong><div class="metric-foot"><span id="success-count">No completed runs yet</span><span class="metric-spark" aria-hidden="true">↗</span></div></article>
+          <article class="metric-card"><span>MEDIAN DURATION <small>SUCCESSFUL RUNS</small></span><strong id="median-duration">—</strong><div class="metric-foot"><span>End-to-end workflow time</span><span class="metric-accent">01</span></div></article>
+          <article class="metric-card"><span>FAILED RUNS <small>IN SELECTED WINDOW</small></span><strong id="failure-count">—</strong><div class="metric-foot"><span id="failure-foot">Failure conclusions only</span><span class="metric-accent">02</span></div></article>
+          <article class="metric-card"><span>WORKFLOWS <small>PUBLIC REPOSITORY</small></span><strong id="workflow-count">—</strong><div class="metric-foot"><span id="run-count">Fetching recent runs</span><span class="metric-accent">03</span></div></article>
+        </div>
+
+        <div class="analysis-grid">
+          <article class="panel trend-panel"><div class="panel-heading"><div><span class="index">03</span><h3>Run trend</h3></div><div class="chart-legend"><span><i class="legend-success"></i>SUCCESS</span><span><i class="legend-failure"></i>FAILURE</span></div></div><p class="panel-subtitle" id="trend-subtitle">Daily completed runs · based on the latest 100 runs</p><div class="chart-wrap" id="chart-wrap"><div class="empty-chart">Waiting for workflow history…</div></div><div class="chart-axis"><span id="chart-start">—</span><span id="chart-mid">—</span><span id="chart-end">—</span></div></article>
+          <article class="panel reliability-panel"><div class="panel-heading"><div><span class="index">04</span><h3>Reliability check</h3></div><span class="signal-tag" id="signal-tag">ANALYZING</span></div><div class="reliability-score"><strong id="reliability-score">—</strong><span>/ 100<br />SIGNAL SCORE</span></div><div class="score-track"><span id="score-track"></span></div><p class="reliability-copy" id="reliability-copy">A simple score from recent success rate and run sample size.</p><div class="reliability-detail"><span>RUNS IN WINDOW</span><b id="window-runs">—</b></div><div class="reliability-detail"><span>IN PROGRESS</span><b id="active-runs">—</b></div><p class="score-note">Exploratory signal only. Not an SLO or production availability measure.</p></article>
+        </div>
+
+        <div class="analysis-grid lower-grid">
+          <article class="panel workflow-panel"><div class="panel-heading"><div><span class="index">05</span><h3>Workflow breakdown</h3></div><span class="table-note">LATEST 100 RUNS</span></div><p class="panel-subtitle">Compare completed-run reliability and median run time.</p><div class="table-scroll"><table><thead><tr><th scope="col">WORKFLOW</th><th scope="col">RUNS</th><th scope="col">SUCCESS</th><th scope="col">MEDIAN</th><th scope="col">LAST RESULT</th></tr></thead><tbody id="workflow-rows"><tr><td colspan="5" class="empty-row">No workflow data yet.</td></tr></tbody></table></div></article>
+          <article class="panel failures-panel"><div class="panel-heading"><div><span class="index">06</span><h3>Failure patterns</h3></div><span class="table-note">BY WORKFLOW</span></div><p class="panel-subtitle">Which pipelines need a closer look?</p><div id="failure-patterns" class="failure-list"><p class="empty-row">No recent failures found.</p></div></article>
+        </div>
+
+        <article class="panel run-panel"><div class="panel-heading"><div><span class="index">07</span><h3>Recent runs</h3></div><div class="run-controls"><label for="branch-select" class="visually-hidden">Filter by branch</label><select id="branch-select" aria-label="Filter recent runs by branch"><option value="all">ALL BRANCHES</option></select><label for="event-select" class="visually-hidden">Filter by event</label><select id="event-select" aria-label="Filter recent runs by event"><option value="all">ALL EVENTS</option></select></div></div><p class="panel-subtitle">Open any run on GitHub to inspect jobs, logs, and artifacts.</p><div id="run-list" class="run-list"><p class="empty-row">Loading recent runs…</p></div><button class="load-more" type="button" id="more-runs" hidden>SHOW MORE RUNS <span>↓</span></button></article>
+      </section>
+
+      <section class="method-note"><div class="method-icon">i</div><div><h2>How to read this page</h2><p>RunScope reads public workflow and run history through the GitHub REST API. It requests no write access and stores nothing on a server. Data reflects the latest 100 runs returned by GitHub; the selected time window can only show runs in that set. Success rate excludes cancelled, skipped, and in-progress runs. Median duration uses each completed run's start and update times.</p></div><a href="https://docs.github.com/en/rest/actions/workflow-runs" target="_blank" rel="noreferrer">API DETAILS ↗</a></section>
+    </main>
+
+    <footer class="footer"><a class="brand footer-brand" href="./"><span class="brand-mark">R</span><span>RUN<span>SCOPE</span></span></a><span>BUILT TO MAKE DELIVERY SIGNALS EASIER TO READ.</span><a href="https://github.com/damnsunnyy" target="_blank" rel="noreferrer">BY SHUBHAM MEGHANI ↗</a></footer>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  </body>
+</html>
