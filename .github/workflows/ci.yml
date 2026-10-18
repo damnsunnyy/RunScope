@@ -29,6 +29,8 @@ jobs:
         run: npm run check
       - name: Run metric unit tests
         run: npm test
+      - name: Build static site
+        run: npm run build
 
   deploy:
     name: Publish GitHub Pages demo
@@ -50,11 +52,7 @@ jobs:
       - name: Upload site artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: |
-            index.html
-            styles.css
-            src/
-            assets/
+          path: dist/
       - name: Deploy site
         id: deployment
         uses: actions/deploy-pages@v4
