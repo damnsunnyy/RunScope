@@ -1,8 +1,10 @@
 # RunScope
 
+**Live demo:** [https://damnsunnyy.github.io/RunScope/](https://damnsunnyy.github.io/RunScope/)
+
 **A read-only GitHub Actions health dashboard for public repositories.** RunScope turns workflow history into a few useful delivery signals: success rate, median successful run time, failure patterns, per-workflow reliability, and a daily run trend.
 
-**[Open the live dashboard](https://damnsunnyy.github.io/RunScope/)** · **[See the portfolio](https://damnsunnyy.github.io/Portfolio/)**
+**[See the portfolio](https://damnsunnyy.github.io/Portfolio/)**
 
 ## Why I built it
 
